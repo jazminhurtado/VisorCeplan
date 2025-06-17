@@ -3,7 +3,7 @@ import streamlit as st
 # Configurar la página
 st.set_page_config(page_title="Visor CEPLAN", page_icon="📊", layout="wide")
 
-# CSS personalizado para sidebar estilo CEPLAN
+# Estilos personalizados para menú lateral multipágina
 st.markdown("""
     <style>
     /* Fondo general del sidebar */
@@ -11,24 +11,7 @@ st.markdown("""
         background-color: #C8102E;
     }
 
-    /* Texto normal del sidebar */
-    [data-testid="stSidebar"] a {
-        color: white;
-        font-weight: bold;
-        text-decoration: none;
-    }
-
-    /* Estilo del ítem activo del menú */
-    [data-testid="stSidebar"] a[aria-current="page"] {
-        background-color: #A50E24;  /* Rojo oscuro */
-        color: white !important;
-        border-radius: 10px;
-        padding: 8px 15px;
-        font-weight: bold;
-        text-decoration: none;
-    }
-
-    /* Título personalizado encima del menú */
+    /* Título superior en el menú */
     [data-testid="stSidebarNav"]::before {
         content: "VISOR CEPLAN";
         font-size: 20px;
@@ -37,6 +20,22 @@ st.markdown("""
         padding-left: 20px;
         display: block;
         margin-bottom: 20px;
+    }
+
+    /* Texto general del menú */
+    section[data-testid="stSidebarNav"] li a {
+        color: white;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    /* Elemento activo del menú */
+    section[data-testid="stSidebarNav"] li span {
+        background-color: #A50E24 !important;
+        color: white !important;
+        border-radius: 10px;
+        padding: 8px 12px;
+        display: block;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -48,7 +47,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Título principal
+# Título principal centrado
 st.markdown("""
 <h1 style='text-align: center;'>📊 Bienvenido al visor <strong>CEPLAN</strong></h1>
 <h2 style='text-align: center;'>Consulta Políticas Nacionales, PDC, PEI y POI fácilmente</h2>
