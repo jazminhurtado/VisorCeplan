@@ -1,11 +1,23 @@
 import streamlit as st
 
-# Configuración mínima oculta para evitar mostrar como página
-st.set_page_config(page_title="Redirigiendo...", layout="wide")
-st.markdown("<style>header, footer, .stApp {{ visibility: hidden; }}</style>", unsafe_allow_html=True)
+st.set_page_config(page_title="Visor CEPLAN", page_icon="📊", layout="wide")
+st.markdown("# 🏠 Inicio")
 
-# Redirección silenciosa a la página real de inicio
-st.switch_page("pages/0_Inicio.py")
+st.title("📊 Bienvenido(a) al visor CEPLAN: consulta PEI, POI, PDC y Políticas Nacionales fácilmente")
+
+st.markdown("""
+### Bienvenido al sistema unificado de visores
+
+Desde aquí puedes consultar:
+- 📋 PEI, POI y PDC por Unidad Ejecutora
+- 🏛️ Políticas Nacionales aprobadas
+
+Utiliza el menú lateral para navegar entre los visores.
+
+---
+
+App elaborada por la **Dirección Nacional de Coordinación y Planeamiento (DNCP)** - CEPLAN
+""", unsafe_allow_html=True)
 
 
 
