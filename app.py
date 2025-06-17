@@ -3,22 +3,33 @@ import streamlit as st
 # Configuración de la página
 st.set_page_config(page_title="Visor CEPLAN", page_icon="📊", layout="wide")
 
-# Personalización del menú lateral con color rojo CEPLAN
+# Estilos personalizados para el menú lateral CEPLAN
 st.markdown(
     """
     <style>
-    /* Fondo del sidebar */
+    /* Fondo general del sidebar */
     [data-testid="stSidebar"] {
-        background-color: #C8102E; /* Rojo CEPLAN */
+        background-color: #C8102E;
     }
 
-    /* Color y estilo del texto en el sidebar */
-    [data-testid="stSidebar"] .css-1v3fvcr, [data-testid="stSidebar"] .css-eww8gc {
+    /* Texto general en el menú */
+    [data-testid="stSidebar"] .css-1v3fvcr,
+    [data-testid="stSidebar"] .css-eww8gc,
+    [data-testid="stSidebar"] .css-10trblm {
         color: white;
         font-weight: bold;
     }
 
-    /* Cambiar "app" por título personalizado */
+    /* Elemento activo (seleccionado) */
+    [data-testid="stSidebar"] .css-1v3fvcr:hover,
+    [data-testid="stSidebar"] .css-1v3fvcr:focus,
+    [data-testid="stSidebar"] .css-1v3fvcr:active,
+    [data-testid="stSidebar"] .css-1v3fvcr[aria-selected="true"] {
+        background-color: #A50E24 !important;
+        color: white !important;
+    }
+
+    /* Título encima del menú */
     [data-testid="stSidebarNav"]::before {
         content: "VISOR CEPLAN";
         font-size: 20px;
@@ -61,4 +72,5 @@ Utiliza el menú lateral para navegar entre los visores.
 
 App elaborada por la **Dirección Nacional de Coordinación y Planeamiento (DNCP)** – CEPLAN
 """)
+
 
