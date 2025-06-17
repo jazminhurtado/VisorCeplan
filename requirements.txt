@@ -4,5 +4,6 @@ pandas
 requests
 openpyxl
 fpdf
+xlsxwriter
 pydeck>=0.8.0
 
