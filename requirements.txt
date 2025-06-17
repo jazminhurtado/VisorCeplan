@@ -1,6 +1,10 @@
+unicodedata2
 streamlit
 pandas
 requests
-fpdf
 openpyxl
-unicodedata2
+fpdf
+pydeck>=0.8.0
+fastapi
+uvicorn
+python-multipart
