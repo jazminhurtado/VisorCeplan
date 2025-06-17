@@ -167,7 +167,7 @@ if seleccion != "-- Selecciona una política --":
                 with pd.ExcelWriter(output, engine='openpyxl') as writer:
                     resultados.to_excel(writer, index=False, sheet_name='Datos')
                 output.seek(0)
-                data_excel = output.getvalue()
+                data_excel = output.getvalue() 
 
                 st.download_button(
                     label="📄 Descargar archivo Excel",
