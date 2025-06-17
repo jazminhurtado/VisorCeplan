@@ -2,7 +2,7 @@
 import streamlit as st
 
 st.set_page_config(page_title="Visor CEPLAN", layout="wide")
-st.title("📊 Visores de Monitoreo y Políticas Nacionales")
+st.title("📊  Visores Integrados de Seguimiento a Planes y Políticas Nacionales del Estado")
 
 st.markdown("""
 ### Bienvenido al sistema unificado de visores
