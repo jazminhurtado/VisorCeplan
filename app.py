@@ -1,3 +1,4 @@
 import streamlit as st
-st.switch_page("pages/0_🏠 Inicio.py")
+st.switch_page("pages/0_Inicio.py")
+
 
