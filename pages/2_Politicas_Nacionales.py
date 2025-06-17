@@ -122,7 +122,7 @@ if seleccion != "-- Selecciona una política --":
 
         tipo = primera.get('tipo', '—')
         color = "#007ACC" if tipo.lower() == "sectorial" else "#4CAF50" if tipo.lower() == "multisectorial" else "#999999"
-        etiqueta_tipo = f"""<span style='background-color:{color}; color:white; padding:4px 10px; border-radius:6px; font-size:13px;'>{tipo}</span>"""
+        etiqueta_tipo = f"<span style='background-color:{color}; color:white; padding:4px 10px; border-radius:6px; font-size:13px;'>{tipo}</span>"
 
         colA, colB = st.columns(2)
 
@@ -140,7 +140,7 @@ if seleccion != "-- Selecciona una política --":
             st.markdown(f"**Informe Técnico CEPLAN:** {mostrar_si_existe('informe_tecnico')}")
             st.markdown(f"**Aprobación Decreto Supremo:** {mostrar_si_existe('decreto_supremo_aprobacion')}")
 
-        st.markdown("### 🌟 Objetivos Prioritarios y sus Lineamientos")
+        st.markdown("### 🎯 Objetivos Prioritarios y sus Lineamientos")
 
         op_lineamientos = resultados[
             resultados['objetivo_prioritario'].notna() & resultados['lineamiento'].notna()
@@ -159,7 +159,7 @@ if seleccion != "-- Selecciona una política --":
         # =======================
         # Descarga
         # =======================
-        st.markdown("### 📅 Formato de descarga:")
+        st.markdown("### 📥 Formato de descarga:")
         formato = st.radio("Selecciona el formato:", ["Excel", "PDF"], index=0, horizontal=False, label_visibility="collapsed")
 
         if st.button("Descargar", key="descargar_btn"):
@@ -181,18 +181,18 @@ if seleccion != "-- Selecciona una política --":
                 class PDF(FPDF):
                     def header(self):
                         self.image("pn.jpg", 10, 8, 33)
-                        self.set_font("Arial", "B", 14)
+                        self.set_font("DejaVu", "B", 14)
                         self.cell(0, 10, "Ficha de Política Nacional", ln=True, align="C")
                         self.ln(10)
 
                     def cuerpo(self, datos, objetivos_lineamientos):
-                        self.set_font("Arial", "", 11)
+                        self.set_font("DejaVu", "", 11)
                         for campo, valor in datos.items():
                             self.multi_cell(0, 8, f"{campo}: {valor}")
                         self.ln(5)
-                        self.set_font("Arial", "B", 12)
+                        self.set_font("DejaVu", "B", 12)
                         self.cell(0, 10, "Objetivos Prioritarios y Lineamientos", ln=True)
-                        self.set_font("Arial", "", 10)
+                        self.set_font("DejaVu", "", 10)
                         for op, lineas in objetivos_lineamientos.items():
                             self.multi_cell(0, 8, f"🔶 {op}")
                             for lin in lineas:
@@ -221,6 +221,9 @@ if seleccion != "-- Selecciona una política --":
                     objetivos_lineamientos[op] = lineas
 
                 pdf = PDF()
+                pdf.add_font("DejaVu", "", "DejaVuSans.ttf", uni=True)
+                pdf.add_font("DejaVu", "B", "DejaVuSans.ttf", uni=True)
+                pdf.set_auto_page_break(auto=True, margin=15)
                 pdf.add_page()
                 pdf.cuerpo(datos, objetivos_lineamientos)
                 pdf_output = io.BytesIO()
@@ -239,7 +242,3 @@ if seleccion != "-- Selecciona una política --":
 # Pie institucional
 # =======================
 st.markdown("<center><small>App elaborada por la Dirección Nacional de Coordinación y Planeamiento (DNCP) - CEPLAN</small></center>", unsafe_allow_html=True)
-
- 
-
-
