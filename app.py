@@ -11,7 +11,7 @@ st.set_page_config(
 col1, col2 = st.columns([1, 6])  # 1 parte para logo, 6 para texto
 
 with col1:
-    st.image("cplan.jpg", width=90)  # Reemplaza con el nombre real de tu logo
+    st.image("cplan.JPG", width=90)  # Reemplaza con el nombre real de tu logo
 
 with col2:
     st.markdown("""
