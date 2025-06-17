@@ -182,18 +182,18 @@ if seleccion != "-- Selecciona una política --":
                 class PDF(FPDF):
                     def header(self):
                         self.image("pn.jpg", 10, 8, 33)
-                        self.set_font("OpenSans", "B", 14)
+                        self.set_font("FreeSans", "B", 14)
                         self.cell(0, 10, "Ficha de Política Nacional", ln=True, align="C")
                         self.ln(10)
 
                     def cuerpo(self, datos, objetivos_lineamientos):
-                        self.set_font("OpenSans", "", 11)
+                        self.set_font("FreeSans", "", 11)
                         for campo, valor in datos.items():
                             self.multi_cell(0, 8, f"{campo}: {valor}")
                         self.ln(5)
-                        self.set_font("OpenSans", "B", 12)
+                        self.set_font("FreeSans", "B", 12)
                         self.cell(0, 10, "Objetivos Prioritarios y Lineamientos", ln=True)
-                        self.set_font("OpenSans", "", 10)
+                        self.set_font("FreeSans", "", 10)
                         for op, lineas in objetivos_lineamientos.items():
                             self.multi_cell(0, 8, f"🔶 {op}")
                             for lin in lineas:
@@ -221,10 +221,10 @@ if seleccion != "-- Selecciona una política --":
                     ].unique().tolist()
                     objetivos_lineamientos[op] = lineas
 
-                font_path = os.path.join("pages", "OpenSans-Regular.ttf")
+                font_path = os.path.join("pages", "FreeSans.ttf")
                 pdf = PDF()
-                pdf.add_font("OpenSans", "", font_path, uni=True)
-                pdf.add_font("OpenSans", "B", font_path, uni=True)
+                pdf.add_font("FreeSans", "", font_path, uni=True)
+                pdf.add_font("FreeSans", "B", font_path, uni=True)
                 pdf.set_auto_page_break(auto=True, margin=15)
                 pdf.add_page()
                 pdf.cuerpo(datos, objetivos_lineamientos)
@@ -244,4 +244,6 @@ if seleccion != "-- Selecciona una política --":
 # Pie institucional
 # =======================
 st.markdown("<center><small>App elaborada por la Dirección Nacional de Coordinación y Planeamiento (DNCP) - CEPLAN</small></center>", unsafe_allow_html=True)
+
+
 
