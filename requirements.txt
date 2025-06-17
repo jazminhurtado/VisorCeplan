@@ -1,7 +1,7 @@
 unicodedata2
 streamlit
 pandas
-requests
+requests 
 openpyxl
 fpdf
 xlsxwriter
