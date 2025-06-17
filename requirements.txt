@@ -1,2 +1,6 @@
 streamlit
 pandas
+requests
+fpdf
+openpyxl
+unicodedata2
