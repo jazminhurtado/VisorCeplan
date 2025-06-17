@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import unicodedata
+import io
 
 # =======================
 # Cargar y preparar datos
@@ -29,7 +30,6 @@ opciones = ["-- Selecciona una política --"] + df_sorted['opcion_combo'].drop_d
 # =======================
 st.markdown("""
 <style>
-/* Botón personalizado */
 button[kind="secondary"] {
     background-color: #003366 !important;
     color: white !important;
@@ -44,20 +44,14 @@ button[kind="secondary"] {
 button[kind="secondary"]:hover {
     background-color: #004080 !important;
 }
-
-/* Cabecera de Streamlit - SIN línea inferior */
 header[data-testid="stHeader"] {
     background-color: white;
     border-bottom: none;
     box-shadow: none;
 }
-
-/* Eliminar espacio superior */
 .main .block-container {
     padding-top: 1rem;
 }
-
-/* Bloque del combo + botón */
 .sticky-filter {
     position: sticky;
     top: 70px;
@@ -68,6 +62,16 @@ header[data-testid="stHeader"] {
     z-index: 999;
     border-bottom: 1px solid #ddd;
     box-shadow: 0px 4px 10px rgba(0,0,0,0.04);
+}
+.download-btn {
+    background-color: #003366;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 10px;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -113,15 +117,12 @@ if seleccion != "-- Selecciona una política --":
 
         st.subheader(f"🟦 {nombre_politica}")
 
-        # Icono visual por estado
         estado_icono = "🟢" if primera.get('estado', '').lower() == "aprobada" else "🟠"
 
-        # Etiqueta visual por tipo de política
         tipo = primera.get('tipo', '—')
         color = "#007ACC" if tipo.lower() == "sectorial" else "#4CAF50" if tipo.lower() == "multisectorial" else "#999999"
         etiqueta_tipo = f"""<span style='background-color:{color}; color:white; padding:4px 10px; border-radius:6px; font-size:13px;'>{tipo}</span>"""
 
-        # Visual en columnas
         colA, colB = st.columns(2)
 
         with colA:
@@ -138,7 +139,6 @@ if seleccion != "-- Selecciona una política --":
             st.markdown(f"**Informe Técnico CEPLAN:** {mostrar_si_existe('informe_tecnico')}")
             st.markdown(f"**Aprobación Decreto Supremo:** {mostrar_si_existe('decreto_supremo_aprobacion')}")
 
-        # Objetivos Prioritarios
         st.markdown("### 🎯 Objetivos Prioritarios y sus Lineamientos")
 
         op_lineamientos = resultados[
@@ -155,10 +155,35 @@ if seleccion != "-- Selecciona una política --":
 
         st.markdown("---")
 
+        # =======================
+        # Descarga
+        # =======================
+        st.markdown("### 📥 Formato de descarga:")
+        formato = st.radio("Selecciona el formato:", ["Excel", "PDF"], index=0, horizontal=False, label_visibility="collapsed")
+
+        if st.button("Descargar", key="descargar_btn"):
+            if formato == "Excel":
+                output = io.BytesIO()
+                with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+                    resultados.to_excel(writer, index=False, sheet_name='Datos')
+                    writer.save()
+                    data_excel = output.getvalue()
+
+                st.download_button(
+                    label="📄 Descargar archivo Excel",
+                    data=data_excel,
+                    file_name='politica_nacional.xlsx',
+                    mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                    use_container_width=True
+                )
+            else:
+                st.warning("📄 Exportación en PDF aún está en desarrollo. ¿Lo activamos juntos? 😉")
+
 # =======================
 # Pie institucional
 # =======================
 st.markdown("<center><small>App elaborada por la Dirección Nacional de Coordinación y Planeamiento (DNCP) - CEPLAN</small></center>", unsafe_allow_html=True)
 
+ 
 
 
