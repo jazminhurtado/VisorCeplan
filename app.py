@@ -1,7 +1,7 @@
 import streamlit as st
 
 # Logo CEPLAN arriba, centrado
-st.image("cplan.JPG", width=190)
+st.image("cplan.JPG", width=290)
 
 # Título debajo del logo
 st.markdown("<h1 style='text-align: center;'>📊 Bienvenido al visor <strong>CEPLAN</strong>:</h1>", unsafe_allow_html=True)
