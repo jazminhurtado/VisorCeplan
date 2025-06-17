@@ -12,7 +12,7 @@ st.markdown("""
 
 # Título principal centrado
 st.markdown("""
-<h1 style='text-align: center;'>📊 Bienvenido al visor <strong>CEPLAN</strong>:</h1>
+<h1 style='text-align: center;'> Bienvenido al visor <strong>CEPLAN</strong>:</h1>
 <h2 style='text-align: center;'>Consulta Políticas Nacionales, PDC, PEI y POI fácilmente</h2>
 """, unsafe_allow_html=True)
 
