@@ -5,7 +5,7 @@ st.set_page_config(page_title="Visor CEPLAN", page_icon="📊", layout="wide")
 # Mostrar logo CEPLAN centrado
 st.markdown("""
 <div style='text-align: center;'>
-    <img src='https://raw.githubusercontent.com/jazminhurtado/VisorCeplan/main/ceplan.jpg' width='260'>
+    <img src='https://raw.githubusercontent.com/jazminhurtado/VisorCeplan/main/ceplan.jpg' width='190'>
 
 </div>
 """, unsafe_allow_html=True)
