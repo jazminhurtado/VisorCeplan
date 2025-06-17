@@ -164,7 +164,7 @@ if seleccion != "-- Selecciona una política --":
         if st.button("Descargar", key="descargar_btn"):
             if formato == "Excel":
                 output = io.BytesIO()
-                with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+                with pd.ExcelWriter(output, engine='openpyxl') as writer:
                     resultados.to_excel(writer, index=False, sheet_name='Datos')
                     writer.save()
                     data_excel = output.getvalue()
