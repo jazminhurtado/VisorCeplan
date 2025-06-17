@@ -27,9 +27,9 @@ def cargar_excel_pdc():
         return None
 
 # --- Funcionalidad del botón recargar datos ---
-if st.button("🔄 Recargar datos desde fuente"):
-    st.session_state["pei_df"] = cargar_excel_pei_poi()
-    st.session_state["pdc_df"] = cargar_excel_pdc()
+#if st.button("🔄 Recargar datos desde fuente"):
+ #   st.session_state["pei_df"] = cargar_excel_pei_poi()
+  #  st.session_state["pdc_df"] = cargar_excel_pdc()
 
 # --- Carga inicial si no existe en session ---
 if "pei_df" not in st.session_state:
