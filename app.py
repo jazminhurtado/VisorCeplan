@@ -3,7 +3,7 @@ import streamlit as st
 st.set_page_config(page_title="Visor CEPLAN", page_icon="📊", layout="wide")
 #st.markdown("# 🏠 Inicio")
 
-st.title("📊 Bienvenido(a) al visor CEPLAN: consulta PEI, POI, PDC y Políticas Nacionales fácilmente")
+st.title("📊 Bienvenido al visor CEPLAN: consulta Políticas Nacionales, PDC, PEI y POI fácilmente")
 
 st.markdown("""
 ### Bienvenido al sistema unificado de visores
