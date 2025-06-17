@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import unicodedata
 import io
+import os
 from fpdf import FPDF
 
 # =======================
