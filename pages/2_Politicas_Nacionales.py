@@ -220,7 +220,7 @@ if seleccion != "-- Selecciona una política --":
                     ].unique().tolist()
                     objetivos_lineamientos[op] = lineas
 
-                font_path = os.path.join(os.path.dirname(__file__), "OpenSans-Regular.ttf")
+                font_path = os.path.join(os.getcwd(), "pages", "OpenSans-Regular.ttf")
                 pdf = PDF()
                 pdf.add_font("OpenSans", "", font_path, uni=True)
                 pdf.add_font("OpenSans", "B", font_path, uni=True)
