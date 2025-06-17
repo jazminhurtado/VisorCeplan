@@ -221,8 +221,9 @@ if seleccion != "-- Selecciona una política --":
                     objetivos_lineamientos[op] = lineas
 
                 pdf = PDF()
-                pdf.add_font("OpenSans", "", "OpenSans-Regular.ttf", uni=True)
-                pdf.add_font("OpenSans", "B", "OpenSans-Regular.ttf", uni=True)
+                font_path = os.path.join(os.path.dirname(__file__), "OpenSans-Regular.ttf")
+                pdf.add_font("OpenSans", "", font_path, uni=True)
+                pdf.add_font("OpenSans", "B", font_path, uni=True)
                 pdf.set_auto_page_break(auto=True, margin=15)
                 pdf.add_page()
                 pdf.cuerpo(datos, objetivos_lineamientos)
