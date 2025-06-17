@@ -45,13 +45,16 @@ button[kind="secondary"]:hover {
     background-color: #004080 !important;
 }
 
-/* Cabecera de Streamlit */
+/* Cabecera de Streamlit - SIN línea inferior */
 header[data-testid="stHeader"] {
-    position: sticky;
-    top: 0;
     background-color: white;
-    z-index: 1000;
-    border-bottom: 1px solid #ccc;
+    border-bottom: none;
+    box-shadow: none;
+}
+
+/* Eliminar espacio superior */
+.main .block-container {
+    padding-top: 1rem;
 }
 
 /* Bloque del combo + botón */
@@ -96,8 +99,6 @@ with st.container():
 # =======================
 # Mostrar resultados
 # =======================
-
-# Función para mostrar campos de forma segura
 def mostrar_si_existe(campo):
     valor = primera.get(campo, '')
     return valor if pd.notna(valor) and str(valor).strip() != '' else "No registrado"
@@ -158,4 +159,6 @@ if seleccion != "-- Selecciona una política --":
 # Pie institucional
 # =======================
 st.markdown("<center><small>App elaborada por la Dirección Nacional de Coordinación y Planeamiento (DNCP) - CEPLAN</small></center>", unsafe_allow_html=True)
+
+
 
