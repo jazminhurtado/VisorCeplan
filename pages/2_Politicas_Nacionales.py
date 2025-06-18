@@ -3,7 +3,6 @@ import pandas as pd
 import unicodedata
 import io
 import os
-from fpdf import FPDF
 
 # =======================
 # Cargar y preparar datos
@@ -81,7 +80,7 @@ header[data-testid="stHeader"] {
 # =======================
 # Encabezado
 # =======================
-st.image("pn.jpg", width=80)  
+st.image("pn.jpg", width=80)
 st.title("Visor - Consulta de Políticas Nacionales del Perú")
 
 # =======================
@@ -89,17 +88,14 @@ st.title("Visor - Consulta de Políticas Nacionales del Perú")
 # =======================
 with st.container():
     st.markdown('<div class="sticky-filter">', unsafe_allow_html=True)
-
     col1, col2 = st.columns([9, 1])
     with col1:
-        seleccion = st.selectbox("📁 Consulta una Política Nacional del Perú :", opciones, key="combo")
-
+        seleccion = st.selectbox("Consulta una Política Nacional del Perú :", opciones, key="combo")
     with col2:
         if st.button("Limpiar", key="limpiar_btn"):
             if "combo" in st.session_state:
                 del st.session_state["combo"]
             st.rerun()
-
     st.markdown('</div>', unsafe_allow_html=True)
 
 # =======================
@@ -126,14 +122,12 @@ if seleccion != "-- Selecciona una política --":
         etiqueta_tipo = f"<span style='background-color:{color}; color:white; padding:4px 10px; border-radius:6px; font-size:13px;'>{tipo}</span>"
 
         colA, colB = st.columns(2)
-
         with colA:
             st.markdown(f"**Número:** {mostrar_si_existe('nro_pn')}")
             st.markdown(f"**Estado:** {estado_icono} {mostrar_si_existe('estado')}")
             st.markdown(f"**Periodo:** {mostrar_si_existe('periodo')}")
             st.markdown(f"**Marco legal:** {mostrar_si_existe('marco_legal')}")
             st.markdown(f"**Problema Público:** {mostrar_si_existe('problema_publico')}")
-
         with colB:
             st.markdown(f"**Tipo:** {etiqueta_tipo}", unsafe_allow_html=True)
             st.markdown(f"**Conductor:** {mostrar_si_existe('conductor')}")
@@ -158,96 +152,27 @@ if seleccion != "-- Selecciona una política --":
         st.markdown("---")
 
         # =======================
-        # Descarga
+        # Descarga solo Excel
         # =======================
         st.markdown("### 📥 Formato de descarga:")
-        formato = st.radio("Selecciona el formato:", ["Excel", "PDF"], index=0, horizontal=False, label_visibility="collapsed")
+        st.markdown("El archivo se descargará automáticamente en formato Excel.")
 
         if st.button("Descargar", key="descargar_btn"):
-            if formato == "Excel":
-                output = io.BytesIO()
-                with pd.ExcelWriter(output, engine='openpyxl') as writer:
-                    resultados.to_excel(writer, index=False, sheet_name='Datos')
-                output.seek(0)
-                data_excel = output.getvalue() 
+            output = io.BytesIO()
+            with pd.ExcelWriter(output, engine='openpyxl') as writer:
+                resultados.to_excel(writer, index=False, sheet_name='Datos')
+            output.seek(0)
+            data_excel = output.getvalue()
 
-                st.download_button(
-                    label="📄 Descargar archivo Excel",
-                    data=data_excel,
-                    file_name='politica_nacional.xlsx',
-                    mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                    use_container_width=True
-                )
-            else:
-                class PDF(FPDF):
-                    def header(self):
-                        self.image("pn.jpg", 10, 8, 33)
-                        self.set_font("FreeSans", "B", 14)
-                        self.cell(0, 10, "Ficha de Política Nacional", ln=True, align="C")
-                        self.ln(10)
-
-                    def cuerpo(self, datos, objetivos_lineamientos):
-                        self.set_font("FreeSans", "", 11)
-                        for campo, valor in datos.items():
-                            self.multi_cell(0, 8, f"{campo}: {valor}")
-                        self.ln(5)
-                        self.set_font("FreeSans", "B", 12)
-                        self.cell(0, 10, "Objetivos Prioritarios y Lineamientos", ln=True)
-                        self.set_font("FreeSans", "", 10)
-                        for op, lineas in objetivos_lineamientos.items():
-                            self.multi_cell(0, 8, f"🔶 {op}")
-                            for lin in lineas:
-                                self.multi_cell(0, 7, f"   - {lin}")
-                            self.ln(3)
-
-                datos = {
-                    "Nombre": nombre_politica,
-                    "Número": mostrar_si_existe('nro_pn'),
-                    "Estado": mostrar_si_existe('estado'),
-                    "Tipo": mostrar_si_existe('tipo'),
-                    "Periodo": mostrar_si_existe('periodo'),
-                    "Conductor": mostrar_si_existe('conductor'),
-                    "Interviniente": mostrar_si_existe('intervinientes'),
-                    "Marco Legal": mostrar_si_existe('marco_legal'),
-                    "Problema Público": mostrar_si_existe('problema_publico'),
-                    "Informe Técnico": mostrar_si_existe('informe_tecnico'),
-                    "Decreto Supremo": mostrar_si_existe('decreto_supremo_aprobacion')
-                }
-
-                objetivos_lineamientos = {}
-                for op in sorted(op_lineamientos['objetivo_prioritario'].unique()):
-                    lineas = op_lineamientos.loc[
-                        op_lineamientos['objetivo_prioritario'] == op, 'lineamiento'
-                    ].unique().tolist()
-                    objetivos_lineamientos[op] = lineas
-
-                font_path = os.path.join("pages", "FreeSans.ttf")
-                pdf = PDF()
-                pdf.add_font("FreeSans", "", font_path, uni=True)
-                pdf.add_font("FreeSans", "B", font_path, uni=True)
-                pdf.set_auto_page_break(auto=True, margin=15)
-                pdf.add_page()
-                pdf.cuerpo(datos, objetivos_lineamientos)
-                pdf_bytes = pdf.output(dest='S').encode('latin1')  # Exportar como string (bytes Latin-1)
-                pdf_output = io.BytesIO(pdf_bytes)                 # Convertir a BytesIO para Streamlit
-
-               # pdf_output = io.BytesIO()
-               # pdf.output(pdf_output)
-               # pdf_output.seek(0)
-
-                st.download_button(
-                    label="📄 Descargar archivo PDF",
-                    data=pdf_output,
-                    file_name="politica_nacional.pdf",
-                    mime="application/pdf",
-                    use_container_width=True
-                )
+            st.download_button(
+                label="📄 Descargar archivo Excel",
+                data=data_excel,
+                file_name='politica_nacional.xlsx',
+                mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                use_container_width=True
+            )
 
 # =======================
 # Pie institucional
 # =======================
-st.markdown("<center><small>App elaborada por la Dirección Nacional de Coordinación y Planeamiento (DNCP) - CEPLAN</small></center>", unsafe_allow_html=True)
-
-
-
-   
+st.markdown("<center><small>App elaborada por la Dirección Nacional de Coordinación y Planeamiento (
