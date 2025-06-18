@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import unicodedata
 import io
-import os
 
 # =======================
 # Cargar y preparar datos
@@ -80,7 +79,7 @@ header[data-testid="stHeader"] {
 # =======================
 # Encabezado
 # =======================
-st.image("pn.jpg", width=80)
+st.image("pn.jpg", width=80)  
 st.title("Visor - Consulta de Políticas Nacionales del Perú")
 
 # =======================
@@ -88,14 +87,17 @@ st.title("Visor - Consulta de Políticas Nacionales del Perú")
 # =======================
 with st.container():
     st.markdown('<div class="sticky-filter">', unsafe_allow_html=True)
+
     col1, col2 = st.columns([9, 1])
     with col1:
-        seleccion = st.selectbox("Consulta una Política Nacional del Perú :", opciones, key="combo")
+        seleccion = st.selectbox("📑 Consulta una Política Nacional del Perú :", opciones, key="combo")
+
     with col2:
         if st.button("Limpiar", key="limpiar_btn"):
             if "combo" in st.session_state:
                 del st.session_state["combo"]
             st.rerun()
+
     st.markdown('</div>', unsafe_allow_html=True)
 
 # =======================
@@ -119,15 +121,17 @@ if seleccion != "-- Selecciona una política --":
 
         tipo = primera.get('tipo', '—')
         color = "#007ACC" if tipo.lower() == "sectorial" else "#4CAF50" if tipo.lower() == "multisectorial" else "#999999"
-        etiqueta_tipo = f"<span style='background-color:{color}; color:white; padding:4px 10px; border-radius:6px; font-size:13px;'>{tipo}</span>"
+        etiqueta_tipo = f"""<span style='background-color:{color}; color:white; padding:4px 10px; border-radius:6px; font-size:13px;'>{tipo}</span>"""
 
         colA, colB = st.columns(2)
+
         with colA:
             st.markdown(f"**Número:** {mostrar_si_existe('nro_pn')}")
             st.markdown(f"**Estado:** {estado_icono} {mostrar_si_existe('estado')}")
             st.markdown(f"**Periodo:** {mostrar_si_existe('periodo')}")
             st.markdown(f"**Marco legal:** {mostrar_si_existe('marco_legal')}")
             st.markdown(f"**Problema Público:** {mostrar_si_existe('problema_publico')}")
+
         with colB:
             st.markdown(f"**Tipo:** {etiqueta_tipo}", unsafe_allow_html=True)
             st.markdown(f"**Conductor:** {mostrar_si_existe('conductor')}")
@@ -152,27 +156,30 @@ if seleccion != "-- Selecciona una política --":
         st.markdown("---")
 
         # =======================
-        # Descarga solo Excel
+        # Descarga
         # =======================
         st.markdown("### 📥 Formato de descarga:")
-        st.markdown("El archivo se descargará automáticamente en formato Excel.")
+        formato = st.radio("Selecciona el formato:", ["Excel", "PDF"], index=0, horizontal=False, label_visibility="collapsed")
 
         if st.button("Descargar", key="descargar_btn"):
-            output = io.BytesIO()
-            with pd.ExcelWriter(output, engine='openpyxl') as writer:
-                resultados.to_excel(writer, index=False, sheet_name='Datos')
-            output.seek(0)
-            data_excel = output.getvalue()
+            if formato == "Excel":
+                output = io.BytesIO()
+                with pd.ExcelWriter(output, engine='openpyxl') as writer:
+                    resultados.to_excel(writer, index=False, sheet_name='Datos')
+                output.seek(0)
+                data_excel = output.getvalue() 
 
-            st.download_button(
-                label="📄 Descargar archivo Excel",
-                data=data_excel,
-                file_name='politica_nacional.xlsx',
-                mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                use_container_width=True
-            )
+                st.download_button(
+                    label="📄 Descargar archivo Excel",
+                    data=data_excel,
+                    file_name='politica_nacional.xlsx',
+                    mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                    use_container_width=True
+                )
+            else:
+                st.warning("📄 Exportación en PDF aún está en desarrollo. ¿Lo activamos juntos? 😉")
 
 # =======================
 # Pie institucional
 # =======================
-st.markdown("<center><small>App elaborada por la Dirección Nacional de Coordinación y Planeamiento (
+st.markdown("<center><small>App elaborada por la Dirección Nacional de Coordinación y Planeamiento (DNCP) - CEPLAN</small></center>", unsafe_allow_html=True)
