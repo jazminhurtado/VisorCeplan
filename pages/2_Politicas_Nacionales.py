@@ -91,7 +91,7 @@ with st.container():
     st.markdown('<div class="sticky-filter">', unsafe_allow_html=True)
     col1, col2 = st.columns([9, 1])
     with col1:
-        seleccion = st.selectbox("📁 Consulta una Política Nacional del Perú :", opciones, key="combo")
+        seleccion = st.selectbox("\ud83d\udcc1 Consulta una Política Nacional del Perú :", opciones, key="combo")
     with col2:
         if st.button("Limpiar", key="limpiar_btn"):
             if "combo" in st.session_state:
@@ -114,9 +114,9 @@ if seleccion != "-- Selecciona una política --":
         nombre_politica = resultados.iloc[0]['politica_nacional_pn']
         primera = resultados.iloc[0]
 
-        st.subheader(f"🟦 {nombre_politica}")
+        st.subheader(f"\ud83d\udd66 {nombre_politica}")
 
-        estado_icono = "🟢" if primera.get('estado', '').lower() == "aprobada" else "🟠"
+        estado_icono = "\ud83d\udfe2" if primera.get('estado', '').lower() == "aprobada" else "\ud83d\udfe0"
 
         tipo = primera.get('tipo', '—')
         color = "#007ACC" if tipo.lower() == "sectorial" else "#4CAF50" if tipo.lower() == "multisectorial" else "#999999"
@@ -136,14 +136,14 @@ if seleccion != "-- Selecciona una política --":
             st.markdown(f"**Informe Técnico CEPLAN:** {mostrar_si_existe('informe_tecnico')}")
             st.markdown(f"**Aprobación Decreto Supremo:** {mostrar_si_existe('decreto_supremo_aprobacion')}")
 
-        st.markdown("### 🎯 Objetivos Prioritarios y sus Lineamientos")
+        st.markdown("### \ud83c\udf1f Objetivos Prioritarios y sus Lineamientos")
 
         op_lineamientos = resultados[
             resultados['objetivo_prioritario'].notna() & resultados['lineamiento'].notna()
         ][['objetivo_prioritario', 'lineamiento']].drop_duplicates()
 
         for op in sorted(op_lineamientos['objetivo_prioritario'].unique()):
-            st.markdown(f"**🔶 {op}**")
+            st.markdown(f"**\ud83d\udd36 {op}**")
             lineas = op_lineamientos.loc[
                 op_lineamientos['objetivo_prioritario'] == op, 'lineamiento'
             ].unique()
@@ -151,8 +151,7 @@ if seleccion != "-- Selecciona una política --":
                 st.markdown(f"- {lin}")
 
         st.markdown("---")
-
-        st.markdown("### 📥 Formato de descarga:")
+        st.markdown("### \ud83d\udcc5 Formato de descarga:")
         formato = st.radio("Selecciona el formato:", ["Excel", "PDF"], index=0, horizontal=False, label_visibility="collapsed")
 
         if st.button("Descargar", key="descargar_btn"):
@@ -163,7 +162,7 @@ if seleccion != "-- Selecciona una política --":
                 output.seek(0)
                 data_excel = output.getvalue()
                 st.download_button(
-                    label="📄 Descargar archivo Excel",
+                    label="\ud83d\udcc4 Descargar archivo Excel",
                     data=data_excel,
                     file_name='politica_nacional.xlsx',
                     mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -216,10 +215,13 @@ if seleccion != "-- Selecciona una política --":
                 pdf.set_auto_page_break(auto=True, margin=15)
                 pdf.add_page()
                 pdf.cuerpo(datos, objetivos_lineamientos)
-                pdf_bytes = bytes(pdf.output(dest='S'), encoding='latin-1')
-                pdf_output = io.BytesIO(pdf_bytes)
+
+                pdf_output = io.BytesIO()
+                pdf_output.write(pdf.output(dest='S').encode('latin-1', 'replace'))
+                pdf_output.seek(0)
+
                 st.download_button(
-                    label="📄 Descargar archivo PDF",
+                    label="\ud83d\udcc4 Descargar archivo PDF",
                     data=pdf_output,
                     file_name="politica_nacional.pdf",
                     mime="application/pdf",
@@ -230,3 +232,4 @@ if seleccion != "-- Selecciona una política --":
 # Pie institucional
 # =======================
 st.markdown("<center><small>App elaborada por la Dirección Nacional de Coordinación y Planeamiento (DNCP) - CEPLAN</small></center>", unsafe_allow_html=True)
+
