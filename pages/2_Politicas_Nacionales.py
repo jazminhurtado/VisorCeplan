@@ -216,7 +216,7 @@ if seleccion != "-- Selecciona una política --":
                 pdf.set_auto_page_break(auto=True, margin=15)
                 pdf.add_page()
                 pdf.cuerpo(datos, objetivos_lineamientos)
-                pdf_bytes = bytes(pdf.output(dest='S'), 'latin1')
+                pdf_bytes = bytes(pdf.output(dest='S'), encoding='latin-1')
                 pdf_output = io.BytesIO(pdf_bytes)
                 st.download_button(
                     label="📄 Descargar archivo PDF",
