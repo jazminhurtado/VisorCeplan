@@ -91,7 +91,7 @@ with st.container():
     st.markdown('<div class="sticky-filter">', unsafe_allow_html=True)
     col1, col2 = st.columns([9, 1])
     with col1:
-        seleccion = st.selectbox("\ud83d\udcc1 Consulta una Política Nacional del Perú :", opciones, key="combo")
+        seleccion = st.selectbox("Consulta una Política Nacional del Perú :", opciones, key="combo")
     with col2:
         if st.button("Limpiar", key="limpiar_btn"):
             if "combo" in st.session_state:
@@ -114,9 +114,9 @@ if seleccion != "-- Selecciona una política --":
         nombre_politica = resultados.iloc[0]['politica_nacional_pn']
         primera = resultados.iloc[0]
 
-        st.subheader(f"\ud83d\udd66 {nombre_politica}")
+        st.subheader(f"🟦 {nombre_politica}")
 
-        estado_icono = "\ud83d\udfe2" if primera.get('estado', '').lower() == "aprobada" else "\ud83d\udfe0"
+        estado_icono = "🟢" if primera.get('estado', '').lower() == "aprobada" else "🟠"
 
         tipo = primera.get('tipo', '—')
         color = "#007ACC" if tipo.lower() == "sectorial" else "#4CAF50" if tipo.lower() == "multisectorial" else "#999999"
@@ -135,101 +135,3 @@ if seleccion != "-- Selecciona una política --":
             st.markdown(f"**Interviniente:** {mostrar_si_existe('intervinientes')}")
             st.markdown(f"**Informe Técnico CEPLAN:** {mostrar_si_existe('informe_tecnico')}")
             st.markdown(f"**Aprobación Decreto Supremo:** {mostrar_si_existe('decreto_supremo_aprobacion')}")
-
-        st.markdown("### \ud83c\udf1f Objetivos Prioritarios y sus Lineamientos")
-
-        op_lineamientos = resultados[
-            resultados['objetivo_prioritario'].notna() & resultados['lineamiento'].notna()
-        ][['objetivo_prioritario', 'lineamiento']].drop_duplicates()
-
-        for op in sorted(op_lineamientos['objetivo_prioritario'].unique()):
-            st.markdown(f"**\ud83d\udd36 {op}**")
-            lineas = op_lineamientos.loc[
-                op_lineamientos['objetivo_prioritario'] == op, 'lineamiento'
-            ].unique()
-            for lin in sorted(lineas):
-                st.markdown(f"- {lin}")
-
-        st.markdown("---")
-        st.markdown("### \ud83d\udcc5 Formato de descarga:")
-        formato = st.radio("Selecciona el formato:", ["Excel", "PDF"], index=0, horizontal=False, label_visibility="collapsed")
-
-        if st.button("Descargar", key="descargar_btn"):
-            if formato == "Excel":
-                output = io.BytesIO()
-                with pd.ExcelWriter(output, engine='openpyxl') as writer:
-                    resultados.to_excel(writer, index=False, sheet_name='Datos')
-                output.seek(0)
-                data_excel = output.getvalue()
-                st.download_button(
-                    label="\ud83d\udcc4 Descargar archivo Excel",
-                    data=data_excel,
-                    file_name='politica_nacional.xlsx',
-                    mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                    use_container_width=True
-                )
-            else:
-                class PDF(FPDF):
-                    def header(self):
-                        self.image("pn.jpg", 10, 8, 33)
-                        self.set_font("Helvetica", "B", 14)
-                        self.cell(0, 10, "Ficha de Política Nacional", ln=True, align="C")
-                        self.ln(10)
-
-                    def cuerpo(self, datos, objetivos_lineamientos):
-                        self.set_font("Helvetica", "", 11)
-                        for campo, valor in datos.items():
-                            self.multi_cell(0, 8, f"{campo}: {valor}")
-                        self.ln(5)
-                        self.set_font("Helvetica", "B", 12)
-                        self.cell(0, 10, "Objetivos Prioritarios y Lineamientos", ln=True)
-                        self.set_font("Helvetica", "", 10)
-                        for op, lineas in objetivos_lineamientos.items():
-                            self.multi_cell(0, 8, f"- {op}")
-                            for lin in lineas:
-                                self.multi_cell(0, 7, f"   • {lin}")
-                            self.ln(3)
-
-                datos = {
-                    "Nombre": nombre_politica,
-                    "Número": mostrar_si_existe('nro_pn'),
-                    "Estado": mostrar_si_existe('estado'),
-                    "Tipo": mostrar_si_existe('tipo'),
-                    "Periodo": mostrar_si_existe('periodo'),
-                    "Conductor": mostrar_si_existe('conductor'),
-                    "Interviniente": mostrar_si_existe('intervinientes'),
-                    "Marco Legal": mostrar_si_existe('marco_legal'),
-                    "Problema Público": mostrar_si_existe('problema_publico'),
-                    "Informe Técnico": mostrar_si_existe('informe_tecnico'),
-                    "Decreto Supremo": mostrar_si_existe('decreto_supremo_aprobacion')
-                }
-
-                objetivos_lineamientos = {}
-                for op in sorted(op_lineamientos['objetivo_prioritario'].unique()):
-                    lineas = op_lineamientos.loc[
-                        op_lineamientos['objetivo_prioritario'] == op, 'lineamiento'
-                    ].unique().tolist()
-                    objetivos_lineamientos[op] = lineas
-
-                pdf = PDF()
-                pdf.set_auto_page_break(auto=True, margin=15)
-                pdf.add_page()
-                pdf.cuerpo(datos, objetivos_lineamientos)
-
-                pdf_output = io.BytesIO()
-                pdf_output.write(pdf.output(dest='S').encode('latin-1', 'replace'))
-                pdf_output.seek(0)
-
-                st.download_button(
-                    label="\ud83d\udcc4 Descargar archivo PDF",
-                    data=pdf_output,
-                    file_name="politica_nacional.pdf",
-                    mime="application/pdf",
-                    use_container_width=True
-                )
-
-# =======================
-# Pie institucional
-# =======================
-st.markdown("<center><small>App elaborada por la Dirección Nacional de Coordinación y Planeamiento (DNCP) - CEPLAN</small></center>", unsafe_allow_html=True)
-
