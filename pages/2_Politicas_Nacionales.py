@@ -228,9 +228,12 @@ if seleccion != "-- Selecciona una política --":
                 pdf.set_auto_page_break(auto=True, margin=15)
                 pdf.add_page()
                 pdf.cuerpo(datos, objetivos_lineamientos)
-                pdf_output = io.BytesIO()
-                pdf.output(pdf_output)
-                pdf_output.seek(0)
+                pdf_bytes = pdf.output(dest='S').encode('latin1')  # Exportar como string (bytes Latin-1)
+                pdf_output = io.BytesIO(pdf_bytes)                 # Convertir a BytesIO para Streamlit
+
+               # pdf_output = io.BytesIO()
+               # pdf.output(pdf_output)
+               # pdf_output.seek(0)
 
                 st.download_button(
                     label="📄 Descargar archivo PDF",
