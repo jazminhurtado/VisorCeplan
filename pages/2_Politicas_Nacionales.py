@@ -3,7 +3,7 @@ import pandas as pd
 import unicodedata
 import io
 from natsort import natsorted
-from weasyprint import HTML  # ⬆️ Para PDF
+#from weasyprint import HTML  # ⬆️ Para PDF
 
 @st.cache_data
 def load_data():
