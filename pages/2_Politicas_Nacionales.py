@@ -3,10 +3,11 @@ import pandas as pd
 import unicodedata
 import io
 from natsort import natsorted
-#from weasyprint import HTML  # ⬆️ Para PDF
 from fpdf import FPDF
 
-
+# =======================
+# Cargar y preparar datos
+# =======================
 @st.cache_data
 def load_data():
     return pd.read_excel('matriz_consistencia_pn.xlsx', sheet_name='43aprobadas')
@@ -30,13 +31,16 @@ opciones = ["-- Selecciona una política --"] + df_sorted['opcion_combo'].drop_d
 # =======================
 # CSS personalizado
 # =======================
-st.markdown("""<style>button[kind="secondary"] {
+st.markdown("""
+<style>
+button[kind="secondary"] {
     background-color: #003366 !important;
     color: white !important;
     border-radius: 8px !important; padding: 6px 14px !important;
     font-size: 12px !important; margin-top: 32px !important;}
 .sticky-filter {position: sticky; top: 70px; background: white; padding: 15px 5px 10px; z-index: 999; border-bottom: 1px solid #ddd;}
-.download-btn {background-color: #003366; color: white; border-radius: 8px; padding: 8px 16px; font-size: 14px; cursor: pointer; margin-top: 10px;}</style>""", unsafe_allow_html=True)
+.download-btn {background-color: #003366; color: white; border-radius: 8px; padding: 8px 16px; font-size: 14px; cursor: pointer; margin-top: 10px;}
+</style>""", unsafe_allow_html=True)
 
 st.image("pn.jpg", width=80)
 st.title("Visor - Consulta de Políticas Nacionales del Perú")
@@ -96,7 +100,7 @@ if seleccion != "-- Selecciona una política --":
                 st.markdown(f"- {lin}")
 
         st.markdown("---")
-        st.markdown("### 📅 Formato de descarga:")
+        st.markdown("### 🗓️ Formato de descarga:")
         formato = st.radio("Selecciona el formato:", ["Excel", "PDF"], index=0, horizontal=False, label_visibility="collapsed")
 
         if st.button("Descargar", key="descargar_btn"):
@@ -108,18 +112,27 @@ if seleccion != "-- Selecciona una política --":
                 st.download_button("Descargar Excel", data=output.getvalue(), file_name='politica_nacional.xlsx', mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
             elif formato == "PDF":
-                html = f"""
-                <h2>{nombre_politica}</h2>
-                <p><strong>Estado:</strong> {mostrar_si_existe('estado')}<br>
-                <strong>Periodo:</strong> {mostrar_si_existe('periodo')}<br>
-                <strong>Tipo:</strong> {tipo}<br>
-                <strong>Conductor:</strong> {mostrar_si_existe('conductor')}<br>
-                <strong>Problema:</strong> {mostrar_si_existe('problema_publico')}</p>
-                """
-                pdf_file = io.BytesIO()
-                HTML(string=html).write_pdf(pdf_file)
-                pdf_file.seek(0)
-                st.download_button("Descargar PDF", data=pdf_file, file_name='politica_nacional.pdf', mime='application/pdf')
+                pdf = FPDF()
+                pdf.add_page()
+                pdf.set_font("Arial", size=12)
+
+                pdf.cell(200, 10, txt=nombre_politica, ln=True, align='L')
+                pdf.cell(200, 10, txt=f"Estado: {mostrar_si_existe('estado')}", ln=True, align='L')
+                pdf.cell(200, 10, txt=f"Periodo: {mostrar_si_existe('periodo')}", ln=True, align='L')
+                pdf.cell(200, 10, txt=f"Tipo: {tipo}", ln=True, align='L')
+                pdf.cell(200, 10, txt=f"Conductor: {mostrar_si_existe('conductor')}", ln=True, align='L')
+                pdf.cell(200, 10, txt=f"Problema: {mostrar_si_existe('problema_publico')}", ln=True, align='L')
+
+                pdf_output = io.BytesIO()
+                pdf.output(pdf_output)
+                pdf_output.seek(0)
+
+                st.download_button(
+                    label="📄 Descargar PDF",
+                    data=pdf_output,
+                    file_name="politica_nacional.pdf",
+                    mime="application/pdf",
+                    use_container_width=True
+                )
 
 st.markdown("<center><small>App elaborada por la Dirección Nacional de Coordinación y Planeamiento (DNCP) - CEPLAN</small></center>", unsafe_allow_html=True)
-
