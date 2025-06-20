@@ -42,7 +42,6 @@ if seleccion != "-- Selecciona una política --":
         primera = resultados.iloc[0]
 
         st.subheader(f"\U0001F4D6 {nombre_politica}")
-
         st.markdown(f"**Estado:** {mostrar_si_existe('estado')}")
         st.markdown(f"**Periodo:** {mostrar_si_existe('periodo')}")
         st.markdown(f"**Tipo:** {mostrar_si_existe('tipo')}")
@@ -50,7 +49,7 @@ if seleccion != "-- Selecciona una política --":
         st.markdown(f"**Problema:** {mostrar_si_existe('problema_publico')}")
 
         st.markdown("### Formato de descarga")
-        formato = st.radio("Selecciona el formato:", ["Excel", "PDF"], index=0)
+        formato = st.radio("Selecciona el formato:", ["Excel", "PDF"])
 
         if st.button("Descargar"):
             if formato == "Excel":
@@ -59,17 +58,38 @@ if seleccion != "-- Selecciona una política --":
                     resultados.to_excel(writer, index=False, sheet_name='Datos')
                 output.seek(0)
                 st.download_button("Descargar Excel", data=output.getvalue(), file_name='politica_nacional.xlsx', mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-
-            elif formato == "PDF":
+            else:
                 pdf = FPDF()
                 pdf.add_page()
                 pdf.set_font("Arial", size=12)
-                pdf.multi_cell(0, 10, f"Política Nacional: {nombre_politica}")
-                pdf.multi_cell(0, 10, f"Estado: {mostrar_si_existe('estado')}")
-                pdf.multi_cell(0, 10, f"Periodo: {mostrar_si_existe('periodo')}")
-                pdf.multi_cell(0, 10, f"Tipo: {mostrar_si_existe('tipo')}")
-                pdf.multi_cell(0, 10, f"Conductor: {mostrar_si_existe('conductor')}")
+
+                pdf.multi_cell(0, 10, nombre_politica, align="L")
+                pdf.cell(0, 10, f"Estado: {mostrar_si_existe('estado')}", ln=True)
+                pdf.cell(0, 10, f"Periodo: {mostrar_si_existe('periodo')}", ln=True)
+                pdf.cell(0, 10, f"Tipo: {mostrar_si_existe('tipo')}", ln=True)
+                pdf.cell(0, 10, f"Conductor: {mostrar_si_existe('conductor')}", ln=True)
                 pdf.multi_cell(0, 10, f"Problema: {mostrar_si_existe('problema_publico')}")
 
-                pdf_output = pdf.output(dest='S').encode('latin-1')
+                pdf.ln(5)
+                pdf.set_font("Arial", 'B', 12)
+                pdf.cell(0, 10, "Objetivos Prioritarios y sus Lineamientos", ln=True)
+                pdf.set_font("Arial", '', 11)
+
+                op_lineamientos = resultados[
+                    resultados['objetivo_prioritario'].notna() & resultados['lineamiento'].notna()
+                ][['objetivo_prioritario', 'lineamiento']].drop_duplicates()
+
+                for op in sorted(op_lineamientos['objetivo_prioritario'].unique()):
+                    pdf.set_font("Arial", 'B', 11)
+                    pdf.multi_cell(0, 10, f"\n{op}")
+                    pdf.set_font("Arial", '', 11)
+                    lineas = op_lineamientos.loc[
+                        op_lineamientos['objetivo_prioritario'] == op, 'lineamiento']
+                    for lin in sorted(lineas.unique()):
+                        pdf.multi_cell(0, 8, f"- {lin}")
+
+                pdf_output = io.BytesIO()
+                pdf_output.write(pdf.output(dest='S').encode('latin1'))
+                pdf_output.seek(0)
+
                 st.download_button("Descargar PDF", data=pdf_output, file_name='politica_nacional.pdf', mime='application/pdf')
