@@ -22,6 +22,7 @@ df = load_data()
 df['nombre_normalizado'] = df['politica_nacional_pn'].apply(normalizar)
 df['nro_normalizado'] = df['nro_pn'].astype(str).apply(normalizar)
 df['opcion_combo'] = df['nro_pn'].astype(str).str.strip() + " - " + df['politica_nacional_pn']
+df['nro_pn'] = df['nro_pn'].astype(str).str.strip()
 df_sorted = df.sort_values(by='nro_pn')
 opciones = ["-- Selecciona una política --"] + df_sorted['opcion_combo'].drop_duplicates().tolist()
 
