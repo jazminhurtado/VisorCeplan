@@ -4,6 +4,8 @@ import unicodedata
 import io
 from natsort import natsorted
 #from weasyprint import HTML  # ⬆️ Para PDF
+from fpdf import FPDF
+
 
 @st.cache_data
 def load_data():
