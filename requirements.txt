@@ -6,6 +6,5 @@ openpyxl
 fpdf
 xlsxwriter
 natsort
-weasyprint
 pydeck>=0.8.0
 
