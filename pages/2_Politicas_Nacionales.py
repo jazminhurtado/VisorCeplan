@@ -124,7 +124,7 @@ if seleccion != "-- Selecciona una política --":
                 pdf.cell(200, 10, txt=f"Problema: {mostrar_si_existe('problema_publico')}", ln=True, align='L')
 
                 pdf_output = io.BytesIO()
-                pdf.output(pdf_output)
+                pdf_output = pdf.output(dest='S').encode('latin1')
                 pdf_output.seek(0)
 
                 st.download_button(
