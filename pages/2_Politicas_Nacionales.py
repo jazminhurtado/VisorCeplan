@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import unicodedata
 import io
+from natsort import natsorted  # ✅ Para orden natural
 
 # =======================
 # Cargar y preparar datos
@@ -20,10 +21,12 @@ def normalizar(texto):
 
 df = load_data()
 df['nombre_normalizado'] = df['politica_nacional_pn'].apply(normalizar)
-df['nro_normalizado'] = df['nro_pn'].astype(str).apply(normalizar)
-df['opcion_combo'] = df['nro_pn'].astype(str).str.strip() + " - " + df['politica_nacional_pn']
 df['nro_pn'] = df['nro_pn'].astype(str).str.strip()
-df_sorted = df.sort_values(by='nro_pn')
+df['nro_normalizado'] = df['nro_pn'].apply(normalizar)
+df['opcion_combo'] = df['nro_pn'] + " - " + df['politica_nacional_pn']
+
+# ✅ Orden natural inteligente
+df_sorted = df.loc[natsorted(df.index, key=lambda i: df.loc[i, 'nro_pn'])]
 opciones = ["-- Selecciona una política --"] + df_sorted['opcion_combo'].drop_duplicates().tolist()
 
 # =======================
