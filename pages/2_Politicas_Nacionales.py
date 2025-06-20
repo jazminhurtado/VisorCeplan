@@ -31,7 +31,7 @@ opciones = ["-- Selecciona una política --"] + df_sorted['opcion_combo'].drop_d
 st.markdown("""
 <style>
 button[kind="secondary"] {
-    background-color: #003366 !important;
+    background-color: #003366 !important; 
     color: white !important;
     border: 1px solid #001f33 !important;
     border-radius: 8px !important;
