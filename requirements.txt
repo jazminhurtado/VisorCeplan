@@ -5,5 +5,6 @@ requests
 openpyxl
 fpdf
 xlsxwriter
+natsort
 pydeck>=0.8.0
 
